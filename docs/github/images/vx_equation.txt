@@ -1,0 +1,1 @@
+v_{x} = tan(\frac{ FOV_{x} }{2})

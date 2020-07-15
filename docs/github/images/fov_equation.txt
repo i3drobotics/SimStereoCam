@@ -1,0 +1,1 @@
+ FOV_{x} = 2 tan^{-1}( \frac{pp \times  r_{x} }{2f})

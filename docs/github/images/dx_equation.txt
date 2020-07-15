@@ -1,0 +1,1 @@
+d_{x} =  v_{x}  \times 2f

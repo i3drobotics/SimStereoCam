@@ -1,0 +1,1 @@
+pp= \frac{2f \times tan( \frac{ FOV_{x} }{2})}{ r_{x} } 
