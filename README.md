@@ -11,15 +11,33 @@ This has been tested using CoppeliaSim 4.0.0 and python 3.7
  - CoppeliaSim 4.0.0
  - Python 3.7
 
+## Demo
+A demo scene is provided in this repository in 'scenes/demo1'.
+This has a CoppeliaSim scene with a selection of objects and the I3DRStereoCamera model. 
+The 3D generation script is also provided in this folder for quick running of the demonstration. 
+
+To test this, run the simulation, wait for the stereo camera to take a couple of images. Then run the gen3d.py python script and wait for it to generate disparity maps and point clouds for each image pair. 
+
 ## Load Model
 The stereo camera model (I3DRStereoCamera.ttm) can be found in the 'models' folder of this repository.
 To load this model into a CoppeliaSim scene click File->Load model.
+
+Alternatively copy the stereo camera model file into CoppeliaSim's model directory:  
+*C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\components\sensors*  
+Then restart CoppeliaSim and load the model from the Model browser.
+
+!["CoppeliaSim Model browser"](docs/github/images/CoppeliaSimModelBrowser.JPG)
+
+Click and drag I3DRStereoCamera from the model browser onto the scene or scene hierarchy.  
+*CoppeliaSim must be restarted after copying the model file into the model directory for it to show up.*
 
 ## Graphical User Interface
 Once loaded into a CoppeliaSim scene the camera parameters can be adjusted with a GUI interface.
 This is opened by clicking on the 'ClickMe_I3DRStereoCameraController', which is a child object of the I3DRStereoCamera.
 
 !["Stereo Camera Options GUI"](docs/github/images/StereoCameraOptions.JPG)
+
+This will hide itself when the simulation starts. 
 
 ## Camera Parameters
 ### Resolution
