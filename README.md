@@ -7,9 +7,10 @@ This repository holds the following tools for simulation of a stereo camera:
  - OpenSCAD scripts for generating 3D models of the camera views and overlap
 
 ## Required
- - CoppeliaSim (tested on v4.0.0) [download](https://www.coppeliarobotics.com/downloads)
- - Python (tested on v3.7) [download](https://www.python.org/downloads/release/python-378/)
- - OpenSCAD (tested on v2019.05) [download](https://www.openscad.org/downloads.html)
+ - **CoppeliaSim** (tested on v4.0.0) [download](https://www.coppeliarobotics.com/downloads)
+ - **Python** (tested on v3.7) [download](https://www.python.org/downloads/release/python-378/)
+    - **Stereo3D** python package available as a pip install (python -m pip install stereo3d)
+ - **OpenSCAD** (tested on v2019.05) [download](https://www.openscad.org/downloads.html)
 
 ## Demo
 A demo scene is provided in this repository in 'scenes/demo1'.
