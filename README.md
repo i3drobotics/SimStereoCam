@@ -11,7 +11,7 @@ To load this model into a CoppeliaSim scene click File->Load model.
 Once loaded into a CoppeliaSim scene the camera parameters can be adjusted with a GUI interface.
 This is opened by clicking on the 'ClickMe_I3DRStereoCameraController', which is a child object of the I3DRStereoCamera.
 
-!["Stereo Camera Options GUI"](docs/github/images/StereoCameraOptions.jpg)
+!["Stereo Camera Options GUI"](docs/github/images/StereoCameraOptions.JPG)
 
 ## Camera Parameters
 ### Resolution
