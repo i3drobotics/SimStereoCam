@@ -3,6 +3,9 @@ import cv2
 from Stereo3D import Stereo3D, StereoCalibration
 from Stereo3D.StereoCapture import *
 
+LOAD_MODE_CHANGES_ONLY = 0
+LOAD_MODE_ALL = 1
+
 def getImagesToProcess(added):
     added_no_extension = [os.path.splitext(f)[0] for f in added]
     lr_image_list = []
@@ -18,7 +21,7 @@ def genCal(resolution,pixel_pitch,focal_length,baseline):
     stcal.get_cal_from_ideal(resolution, pixel_pitch, focal_length, baseline)
     return stcal
 
-def processImages(image_folder,lr_image_list,stcal,stmatcher):
+def processImages(image_folder,lr_image_list,stcal,stmatcher,showPreviewGUI=False):
     for f_lr in lr_image_list:
         f_l,f_r = f_lr
         f_d = f_l[:-1] + "d"
@@ -29,12 +32,11 @@ def processImages(image_folder,lr_image_list,stcal,stmatcher):
         stcap = StereoCapture("Image",[f_l,f_r])
         s3D = Stereo3D(stcap,stcal,stmatcher)
         connected = s3D.connect()
-        '''
-        while(True):
-            exit_code = s3D.run_frame()
-            if (exit_code == s3D.EXIT_CODE_QUIT):
-                break
-        '''
+        if showPreviewGUI:
+            while(True):
+                exit_code = s3D.run_frame()
+                if (exit_code == s3D.EXIT_CODE_QUIT):
+                    break
         res,disp = s3D.grab3D(False)
         if (res):
             disp_scaled = s3D.scale_disparity(disp)
@@ -49,78 +51,62 @@ def processImages(image_folder,lr_image_list,stcal,stmatcher):
         else:
             print("Failed to generate 3D")
 
+def gen3d(resolution,pixel_pitch,focal_length,baseline,load_mode,stmatcher,showPreviewGUI=False):
+    # initalise calibration for generating 3d from camera parameters
+    stcal = genCal(resolution,pixel_pitch,focal_length,baseline)
 
-LOAD_MODE_CHANGES_ONLY = 0
-LOAD_MODE_ALL = 1
+    if (load_mode == LOAD_MODE_CHANGES_ONLY):
+        # check for new files in folder
+        
+        before = dict ([(f, None) for f in os.listdir (folder)])
+        added = []
+        while True:
+            time.sleep (1)
+            after = dict ([(f, None) for f in os.listdir (folder)])
+            added = [f for f in after if not f in before]
+            if added: 
+                print("Added: ", ", ".join (added))
+                lr_image_list = getImagesToProcess(added)
+                processImages(folder+"/",lr_image_list,stcal,stmatcher,showPreviewGUI)
+            before = after
+    elif (load_mode == LOAD_MODE_ALL):
+        files = dict ([(f, None) for f in os.listdir (folder)])
+        added = [f for f in files if (os.path.splitext(f)[1]==".png")]
+        lr_image_list = getImagesToProcess(added)
+        processImages(folder+"/",lr_image_list,stcal,stmatcher,showPreviewGUI)
 
 # define camera parameters
-resolution = [2448,2048]
-pixel_pitch=0.00000345
-focal_length=0.008
-baseline=0.3
+resolution = [2448,2048] # pixels
+pixel_pitch=0.00000345 # meters
+focal_length=0.008 # meters
+baseline=0.3 # meters
 # define load mode
 load_mode = LOAD_MODE_ALL
 # define folder
 folder = "."
+# define show preview GUI
+showPreviewGUI = False
 
-# setup cal files for generating 3d
-stcal = genCal(resolution,pixel_pitch,focal_length,baseline)
-# setup stereo matcher
-#stmatcher = "BM"
-'''
-stmatcher = cv2.StereoBM_create()
-default_min_disp = 1037
-default_num_disparities = 30
-default_block_size = 8
-default_uniqueness_ratio = 15
-default_texture_threshold = 60
-default_speckle_size = 30
-default_speckle_range = 1000
-calc_block = (2 * default_block_size + 5)
-stmatcher.setBlockSize(calc_block)
-stmatcher.setMinDisparity(int(default_min_disp - 1000))
-stmatcher.setNumDisparities(16*(default_num_disparities+1))
-stmatcher.setUniquenessRatio(default_uniqueness_ratio)
-stmatcher.setTextureThreshold(default_texture_threshold)
-stmatcher.setSpeckleWindowSize(default_speckle_size)
-stmatcher.setSpeckleRange(default_speckle_range)
-'''
-#stmatcher = "SGBM"
-stmatcher = cv2.StereoSGBM_create()
-default_min_disp = 1037
-default_num_disparities = 30
-default_block_size = 5
-default_uniqueness_ratio = 15
-default_texture_threshold = 60
-default_speckle_size = 30
-default_speckle_range = 1000
-calc_block = (2 * default_block_size + 5)
-stmatcher.setBlockSize(calc_block)
-stmatcher.setMinDisparity(int(default_min_disp - 1000))
-stmatcher.setNumDisparities(16*(default_num_disparities+1))
-stmatcher.setUniquenessRatio(default_uniqueness_ratio)
-stmatcher.setSpeckleWindowSize(default_speckle_size)
-stmatcher.setSpeckleRange(default_speckle_range)
+# define stereo matcher
+#stmatcher = cv2.StereoBM_create() # faster / less accurate
+stmatcher = cv2.StereoSGBM_create() # slower / more accurate
 
-if (load_mode == LOAD_MODE_CHANGES_ONLY):
-    # check for new files in folder
-    
-    before = dict ([(f, None) for f in os.listdir (folder)])
-    added = []
-    while 1:
-        time.sleep (10)
-        after = dict ([(f, None) for f in os.listdir (folder)])
-        added = [f for f in after if not f in before]
-        #removed = [f for f in before if not f in after]
-        if added: 
-            print("Added: ", ", ".join (added))
-            lr_image_list = getImagesToProcess(added)
-            processImages(folder+"/",lr_image_list,stcal,stmatcher)
-        #if removed: 
-        #    print ("Removed: ", ", ".join (removed))
-        before = after
-elif (load_mode == LOAD_MODE_ALL):
-    files = dict ([(f, None) for f in os.listdir (folder)])
-    added = [f for f in files if (os.path.splitext(f)[1]==".png")]
-    lr_image_list = getImagesToProcess(added)
-    processImages(folder+"/",lr_image_list,stcal,stmatcher)
+# define stereo matcher parameters
+min_disp = 1037
+num_disparities = 30
+block_size = 5
+uniqueness_ratio = 15
+speckle_size = 30
+speckle_range = 1000
+
+# initalise stereo matcher matcher
+calc_block = (2 * block_size + 5)
+stmatcher.setBlockSize(calc_block)
+stmatcher.setMinDisparity(int(min_disp - 1000))
+stmatcher.setNumDisparities(16*(num_disparities+1))
+stmatcher.setUniquenessRatio(uniqueness_ratio)
+stmatcher.setSpeckleWindowSize(speckle_size)
+stmatcher.setSpeckleRange(speckle_range)
+
+# run 3d generation
+gen3d(resolution,pixel_pitch,focal_length,baseline,load_mode,stmatcher,showPreviewGUI)
