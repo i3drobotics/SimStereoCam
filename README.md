@@ -1,21 +1,23 @@
 # Sim Stereo Cam
-Simulation of a Stereo Camera in CoppeliaSim. 
+Simulation of a Stereo Camera. 
 
-This repository holds a stereo camera CoppeliaSim model with adjustable parameters.
+This repository holds the following tools for simulation of a stereo camera:
+ - Stereo camera CoppeliaSim model with adjustable parameters
+ - Python script for using the images generated from the simulation to create disparity maps and point clouds
+ - OpenSCAD scripts for generating 3D models of the camera views and overlap
 
-Also provided in this repository is a script for using the images generated from the simulation to create disparity maps and point clouds. 
-
-This has been tested using CoppeliaSim 4.0.0 and python 3.7
-
-## Requirements
- - CoppeliaSim 4.0.0
- - Python 3.7
+## Required
+ - CoppeliaSim (tested on v4.0.0) [download](https://www.coppeliarobotics.com/downloads)
+ - Python (tested on v3.7) [download](https://www.python.org/downloads/release/python-378/)
+ - OpenSCAD (tested on v2019.05) [download](https://www.openscad.org/downloads.html)
 
 ## Demo
 A demo scene is provided in this repository in 'scenes/demo1'.
 This has a CoppeliaSim scene with a selection of objects and the I3DRStereoCamera model. 
-The 3D generation script is also provided in this folder for quick running of the demonstration. 
 
+Also provided in this demo folder are the camera overlap stl's that were created using the openSCAD scripts (also included). These were placed in the CoppeliaSim scene and can be seen as pale blue and red objects. 
+
+The 3D generation script with the parameters set to match the simulated model is also provided in this folder for quick running of the demo. 
 To test this, run the simulation, wait for the stereo camera to take a couple of images. Then run the gen3d.py python script and wait for it to generate disparity maps and point clouds for each image pair. 
 
 ## Load Model
